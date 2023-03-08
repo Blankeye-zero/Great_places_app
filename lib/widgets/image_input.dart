@@ -1,16 +1,26 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart';
 
 class ImageInput extends StatefulWidget {
-  const ImageInput({super.key, this.storedImage});
-
-  final storedImage;
-
+  const ImageInput({super.key});
   @override
   State<ImageInput> createState() => _ImageInputState();
 }
 
 class _ImageInputState extends State<ImageInput> {
+  File? _storedImage;
+  Future<void> _takePicture () async{
+    final XFile? imageFile = await ImagePicker().pickImage(source: ImageSource.camera, maxWidth: 600);
+    setState(() {
+       _storedImage = File(imageFile!.path); 
+    });
+    final appDir = await getApplicationDocumentsDirectory(); // from path_provider.dart
+    final fileName = basename(imageFile!.path); // from path.dart
+    final savedImage = _storedImage!.copySync('${appDir.path}/$fileName');
+  }
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -21,8 +31,8 @@ class _ImageInputState extends State<ImageInput> {
           decoration:
               BoxDecoration(border: Border.all(width: 1, color: Colors.grey)),
           alignment: Alignment.center,
-          child: widget.storedImage != null
-              ? Image.file(widget.storedImage,
+          child: _storedImage != null
+              ? Image.file(_storedImage!,
                   fit: BoxFit.cover, width: double.infinity)
               : const Text('No image Taken', textAlign: TextAlign.center,),
         ),
@@ -31,7 +41,7 @@ class _ImageInputState extends State<ImageInput> {
         ),
         Expanded(
             child: TextButton(
-          onPressed: () {},
+          onPressed: _takePicture,
           style: TextButton.styleFrom(
               textStyle:
                   TextStyle(color: Theme.of(context).colorScheme.primary)),

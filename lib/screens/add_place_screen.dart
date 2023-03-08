@@ -14,6 +14,11 @@ class AddPlaceScreen extends StatefulWidget {
 
 class _AddPlaceScreenState extends State<AddPlaceScreen> {
   final _titleController = TextEditingController();
+  File? _pickedImage;
+
+  void _selectImage(File pickedImage){
+    _pickedImage = pickedImage;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +29,7 @@ class _AddPlaceScreenState extends State<AddPlaceScreen> {
           Expanded(child: SingleChildScrollView(child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(children: <Widget>[
-               TextField(decoration: const InputDecoration(labelText: 'Title'),controller: _titleController), const SizedBox(height: 10,), ImageInput()
+               TextField(decoration: const InputDecoration(labelText: 'Title'),controller: _titleController), const SizedBox(height: 10,), const ImageInput()
             ]),
           ))),
           //https://api.flutter.dev/flutter/material/ButtonStyle-class.html refer for elevated button styling
